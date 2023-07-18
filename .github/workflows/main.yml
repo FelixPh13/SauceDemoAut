@@ -44,7 +44,6 @@ jobs:
         chmod +x chromedriver
         sudo mv chromedriver /usr/local/bin/
 
-
     - name: Cache Maven packages
       uses: actions/cache@v3
       with:
@@ -56,4 +55,5 @@ jobs:
       run: mvn -B package --file pom.xml
 
     - name: Run tests
-      run: mvn test
+      run: |
+        mvn test -Dwebdriver.chrome.driver=/usr/local/bin/chromedriver -Dwebdriver.chrome.args="--no-sandbox --disable-dev-shm-usage"
