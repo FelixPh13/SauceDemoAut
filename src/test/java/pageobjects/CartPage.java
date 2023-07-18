@@ -10,7 +10,7 @@ import java.util.List;
 
 public class CartPage {
     private WebDriver driver;
-    private WebDriverWait wait;
+    private WebDriverWait wait; //test
 
     public CartPage(WebDriver driver) {
         this.driver = driver;
