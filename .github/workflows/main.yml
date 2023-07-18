@@ -25,26 +25,25 @@ jobs:
       with:
         node-version: '16'
 
-    - name: Install Chrome
+    - name: Install Google Chrome
       run: |
         wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
         sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
         sudo apt-get update
         sudo apt-get install -y google-chrome-stable
-        
-    - name: Verify Chrome installation
+
+    - name: Get Chrome version
       run: google-chrome-stable --version
 
     - name: Install ChromeDriver
       run: |
-        LATEST_CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
-        curl -sS -o chromedriver.zip "https://chromedriver.storage.googleapis.com/$LATEST_CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
+        LATEST_CHROMEDRIVER_VERSION=$(google-chrome-stable --version | grep -oP '(?<=Google Chrome )[^ ]+')
+        wget -q "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$LATEST_CHROMEDRIVER_VERSION"
+        CHROMEDRIVER_VERSION=$(cat "LATEST_RELEASE_$LATEST_CHROMEDRIVER_VERSION")
+        wget -q -O chromedriver.zip "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
         unzip chromedriver.zip
         chmod +x chromedriver
         sudo mv chromedriver /usr/local/bin/
-
-    - name: Set ChromeDriver path
-      run: echo "CHROMEWEBDRIVER=/usr/local/bin/chromedriver" >> $GITHUB_ENV
 
     - name: Cache Maven packages
       uses: actions/cache@v3
