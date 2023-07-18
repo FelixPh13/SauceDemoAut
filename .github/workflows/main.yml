@@ -24,7 +24,12 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '16'
-        
+
+    - name: Install Chrome
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y google-chrome-stable
+
     - name: Install ChromeDriver
       run: |
         LATEST_CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
@@ -32,7 +37,9 @@ jobs:
         unzip chromedriver.zip
         chmod +x chromedriver
         sudo mv chromedriver /usr/local/bin/
-        chromedriver --version
+
+    - name: Set ChromeDriver path
+      run: echo "CHROMEWEBDRIVER=/usr/local/bin/chromedriver" >> $GITHUB_ENV
 
     - name: Cache Maven packages
       uses: actions/cache@v3
