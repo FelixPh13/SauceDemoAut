@@ -50,4 +50,4 @@ jobs:
         run: mvn -B package --file pom.xml
 
       - name: Run Cucumber tests
-        run: mvn test -Dtest=RunCucumberTest
+        run: mvn test -Dtest=testrunner.TestRunner
