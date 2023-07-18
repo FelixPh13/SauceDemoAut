@@ -35,15 +35,15 @@ jobs:
     - name: Get Chrome version
       run: google-chrome-stable --version
 
-    - name: Install ChromeDriver
+    - name: Download ChromeDriver
       run: |
-        LATEST_CHROMEDRIVER_VERSION=$(google-chrome-stable --version | awk '{print $3}' | cut -d '.' -f 1-3)
-        wget -q "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$LATEST_CHROMEDRIVER_VERSION"
-        CHROMEDRIVER_VERSION=$(cat "LATEST_RELEASE_$LATEST_CHROMEDRIVER_VERSION")
-        wget -q -O chromedriver.zip "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
+        LATEST_CHROME_VERSION=$(google-chrome-stable --version | awk '{print $3}' | cut -d '.' -f 1-3)
+        CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE_${LATEST_CHROME_VERSION})
+        curl -sS -o chromedriver.zip "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
         unzip chromedriver.zip
         chmod +x chromedriver
         sudo mv chromedriver /usr/local/bin/
+
 
     - name: Cache Maven packages
       uses: actions/cache@v3
