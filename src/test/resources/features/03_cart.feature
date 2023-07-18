@@ -15,6 +15,17 @@ Feature: Cart
     And I open the cart
     Then the cart should be empty
 
+  Scenario: Add multiple products to cart and check total amount
+    Given I am on the login page
+    Given I am logged in
+    When I add "Sauce Labs Bike Light" to cart
+    And I add "Sauce Labs Backpack" to cart
+    And I add "Sauce Labs Bolt T-Shirt" to cart
+    Then I open the cart
+    Then I proceed to checkout
+    Then I enter random customer information
+    Then I click continue on checkout page
+    And The total amount in the cart should match the sum of the prices of the added products
 
   Scenario: Checkout and complete order
     Given I am on the login page

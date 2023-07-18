@@ -18,9 +18,12 @@ import pageobjects.InventoryPage;
 import pageobjects.CartPage;
 import pageobjects.CheckoutCompletePage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StepDefinitions {
+
+    private List<Double> cartProductPrices;
     WebDriver driver;
     LoginPage loginPage;
     InventoryPage inventoryPage;
@@ -38,6 +41,7 @@ public class StepDefinitions {
         cartPage = new CartPage(driver);
         checkoutPage = new CheckoutPage(driver);
         checkoutCompletePage = new CheckoutCompletePage(driver);
+        cartProductPrices = new ArrayList<>();
     }
 
     @Given("I am on the login page")
@@ -91,12 +95,11 @@ public class StepDefinitions {
         loginPage.clickLogin();
 
         checkoutPage = new CheckoutPage(driver);
-        checkoutCompletePage = new CheckoutCompletePage(driver); // Initialize checkoutCompletePage
+        checkoutCompletePage = new CheckoutCompletePage(driver);
     }
 
     @When("I select the {string} filter")
     public void i_select_the_filter(String filterOption) {
-        // Initialisieren der InventoryPage-Instanz
         inventoryPage = new InventoryPage(driver);
         inventoryPage.selectFilter(filterOption);
     }
@@ -106,15 +109,17 @@ public class StepDefinitions {
         boolean isSorted = inventoryPage.areProductsSortedBy(sortType);
         Assert.assertTrue("The products are not sorted by " + sortType, isSorted);
     }
+
     @When("I add {string} to cart")
     public void i_add_to_cart(String productName) {
-        // Initialisieren der InventoryPage-Instanz
         inventoryPage = new InventoryPage(driver);
         inventoryPage.updateCart(productName, "add");
+        Double price = inventoryPage.getProductPrice(productName);
+        cartProductPrices.add(price);
     }
+
     @When("I remove {string} from cart")
     public void i_remove_from_cart(String productName) {
-        // Initialisieren der InventoryPage-Instanz
         inventoryPage = new InventoryPage(driver);
         inventoryPage.updateCart(productName, "remove");
     }
@@ -162,7 +167,29 @@ public class StepDefinitions {
         boolean isConfirmationDisplayed = checkoutCompletePage.isConfirmationMessageDisplayed();
         Assert.assertTrue("Confirmation message is not displayed", isConfirmationDisplayed);
     }
+    @Then("The product images for all products should be displayed")
+    public void the_product_images_for_all_products_should_be_displayed() {
+        List<String> productNames = inventoryPage.getProductNames();
+        for (String productName : productNames) {
+            boolean isImageDisplayed = inventoryPage.isProductImageDisplayed(productName);
+            Assert.assertTrue("The product image for " + productName + " is not displayed", isImageDisplayed);
+        }
+    }
 
+    @Then("The product descriptions for all products should be displayed")
+    public void the_product_descriptions_for_all_products_should_be_displayed() {
+        List<String> productNames = inventoryPage.getProductNames();
+        for (String productName : productNames) {
+            boolean isDescriptionDisplayed = inventoryPage.isProductDescriptionDisplayed(productName);
+            Assert.assertTrue("The product description for " + productName + " is not displayed", isDescriptionDisplayed);
+        }
+    }
+    @Then("The total amount in the cart should match the sum of the prices of the added products")
+    public void the_total_amount_in_the_cart_should_match_the_sum_of_the_prices_of_the_added_products() {
+        Double expectedTotal = cartProductPrices.stream().mapToDouble(Double::doubleValue).sum();
+        Double actualTotal = cartPage.getCartTotal();
+        Assert.assertEquals("The total amount in the cart is incorrect", expectedTotal, actualTotal, 0.01);
+    }
 
     @After
     public void tearDown() {

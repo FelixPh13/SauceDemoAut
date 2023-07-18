@@ -16,6 +16,18 @@ public class InventoryPage {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, 20);
     }
+    public double getProductPrice(String productName) {
+        List<WebElement> items = driver.findElements(By.className("inventory_item"));
+        for (WebElement item : items) {
+            WebElement itemTitle = item.findElement(By.className("inventory_item_name"));
+            if (itemTitle.getText().equals(productName)) {
+                WebElement priceElement = item.findElement(By.className("inventory_item_price"));
+                String priceText = priceElement.getText().replace("$", "");
+                return Double.parseDouble(priceText);
+            }
+        }
+        throw new NoSuchElementException("Could not find product with name: " + productName);
+    }
 
     public List<Double> getProductPrices() {
         List<Double> prices = new ArrayList<>();
@@ -37,6 +49,7 @@ public class InventoryPage {
         }
         return productNames;
     }
+
     private boolean isSortedByNameAscending(List<String> names) {
         for (int i = 0; i < names.size() - 1; i++) {
             String currentName = names.get(i);
@@ -112,6 +125,32 @@ public class InventoryPage {
             }
         }
     }
+
+
+    public boolean isProductImageDisplayed(String productName) {
+        List<WebElement> items = driver.findElements(By.className("inventory_item"));
+        for (WebElement item : items) {
+            WebElement itemTitle = item.findElement(By.className("inventory_item_name"));
+            if (itemTitle.getText().equals(productName)) {
+                WebElement img = item.findElement(By.cssSelector(".inventory_item_img img"));
+                return img.isDisplayed();
+            }
+        }
+        throw new NoSuchElementException("Could not find product with name: " + productName);
+    }
+
+    public boolean isProductDescriptionDisplayed(String productName) {
+        List<WebElement> items = driver.findElements(By.className("inventory_item"));
+        for (WebElement item : items) {
+            WebElement itemTitle = item.findElement(By.className("inventory_item_name"));
+            if (itemTitle.getText().equals(productName)) {
+                WebElement desc = item.findElement(By.className("inventory_item_desc"));
+                return desc.isDisplayed();
+            }
+        }
+        throw new NoSuchElementException("Could not find product with name: " + productName);
+    }
+
 
     private By getButtonClass(String action) {
         switch (action) {

@@ -1,7 +1,4 @@
 Feature: Login
-  As a user
-  I want to login with valid credentials
-  So that I can access the inventory page
 
   Scenario: Successful login
     Given I am on the login page
@@ -32,6 +29,12 @@ Feature: Login
     When I enter username "standard_user" and password ""
     And I click on the login button
     Then I should see the error message "Epic sadface: Password is required"
+
+  Scenario: Failed login with missing password and username
+    Given I am on the login page
+    When I enter username "" and password ""
+    And I click on the login button
+    Then I should see the error message "Epic sadface: Username is required"
 
   Scenario: Failed login with locked out user
     Given I am on the login page

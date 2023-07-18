@@ -20,7 +20,7 @@ public class CartPage {
     public void openCart() {
         WebElement cartIcon = driver.findElement(By.id("shopping_cart_container"));
         cartIcon.click();
-        wait.until(ExpectedConditions.urlContains("/cart.html")); // Warten, bis die URL "/cart.html" enthält
+        wait.until(ExpectedConditions.urlContains("/cart.html"));
     }
 
     public boolean isItemPresentInCart(String itemName) {
@@ -34,6 +34,13 @@ public class CartPage {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("cart_list")));
         List<WebElement> cartItems = driver.findElements(By.className("cart_item"));
         return cartItems.isEmpty();
+    }
+    public double getCartTotal() {
+        WebElement summaryContainer = driver.findElement(By.id("checkout_summary_container"));
+        String summaryText = summaryContainer.getText();
+        String itemTotalText = summaryText.split("Item total: ")[1].split("\n")[0];
+        itemTotalText = itemTotalText.replace("$", "");
+        return Double.parseDouble(itemTotalText);
     }
 
     public void clickCheckout() {
