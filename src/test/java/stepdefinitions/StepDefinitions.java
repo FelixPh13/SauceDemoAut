@@ -53,23 +53,23 @@ public class StepDefinitions {
     }
 
     @Given("I am on the login page")
-    public void i_am_on_the_login_page() {
+    public void iAmOnTheLoginPage() {
         driver.get("https://www.saucedemo.com/");
     }
 
     @When("I enter username {string} and password {string}")
-    public void i_enter_username_and_password(String username, String password) {
+    public void iEnterUsernameAndPassword(String username, String password) {
         loginPage.setUsername(username);
         loginPage.setPassword(password);
     }
 
     @When("I click on the login button")
-    public void i_click_on_the_login_button() {
+    public void iClickOnTheLoginButton() {
         loginPage.clickLogin();
     }
 
     @Then("I should be redirected to the inventory page")
-    public void i_should_be_redirected_to_the_inventory_page() {
+    public void iShouldBeRedirectedToTheInventoryPage() {
         Assert.assertTrue(driver.getCurrentUrl().contains("inventory.html"));
     }
 
@@ -97,7 +97,7 @@ public class StepDefinitions {
     }
 
     @Given("I am logged in")
-    public void i_am_logged_in() {
+    public void iAmLoggedIn() {
         loginPage.setUsername("standard_user");
         loginPage.setPassword("secret_sauce");
         loginPage.clickLogin();
@@ -107,19 +107,19 @@ public class StepDefinitions {
     }
 
     @When("I select the {string} filter")
-    public void i_select_the_filter(String filterOption) {
+    public void iSelectTheFilter(String filterOption) {
         inventoryPage = new InventoryPage(driver);
         inventoryPage.selectFilter(filterOption);
     }
 
     @Then("The products should be sorted by {string}")
-    public void the_products_should_be_sorted_by(String sortType) {
+    public void theProductsShouldBeSortedBy(String sortType) {
         boolean isSorted = inventoryPage.areProductsSortedBy(sortType);
         Assert.assertTrue("The products are not sorted by " + sortType, isSorted);
     }
 
     @When("I add {string} to cart")
-    public void i_add_to_cart(String productName) {
+    public void iAddToCart(String productName) {
         inventoryPage = new InventoryPage(driver);
         inventoryPage.updateCart(productName, "add");
         Double price = inventoryPage.getProductPrice(productName);
@@ -127,56 +127,56 @@ public class StepDefinitions {
     }
 
     @When("I remove {string} from cart")
-    public void i_remove_from_cart(String productName) {
+    public void iRemoveFromCart(String productName) {
         inventoryPage = new InventoryPage(driver);
         inventoryPage.updateCart(productName, "remove");
     }
 
     @Then("I open the cart")
-    public void i_open_the_cart() {
+    public void iOpenTheCart() {
         cartPage.openCart();
     }
 
     @Then("I should see {string} in the cart")
-    public void i_should_see_in_the_cart(String productName) {
+    public void iShouldSeeInTheCart(String productName) {
 
         boolean isItemPresent = cartPage.isItemPresentInCart(productName);
         Assert.assertTrue("Product is not present in the cart", isItemPresent);
     }
 
     @Then("the cart should be empty")
-    public void the_cart_should_be_empty() {
+    public void theCartShouldBeEmpty() {
         Assert.assertTrue("Cart is not empty", cartPage.isCartEmpty());
     }
 
     @When("I proceed to checkout")
-    public void i_proceed_to_checkout() {
+    public void iProceedToCheckout() {
         cartPage.clickCheckout();
     }
 
     @When("I enter random customer information")
-    public void i_enter_random_customer_information() {
+    public void iEnterRandomCustomerInformation() {
         CheckoutPage checkoutPage = new CheckoutPage(driver);
         checkoutPage.enterRandomCustomerInformation();
     }
 
     @When("I click continue on checkout page")
-    public void i_click_continue_on_checkout_page() {
+    public void iClickContinueOnCheckoutPage() {
         checkoutPage.clickContinue();
     }
 
     @When("I click finish on checkout page")
-    public void i_click_finish_on_checkout_page() {
+    public void iClickFinishOnCheckoutPage() {
         checkoutPage.clickFinish();
     }
 
     @Then("I should see the success message")
-    public void i_should_see_the_message() {
+    public void iShouldSeeTheMessage() {
         boolean isConfirmationDisplayed = checkoutCompletePage.isConfirmationMessageDisplayed();
         Assert.assertTrue("Confirmation message is not displayed", isConfirmationDisplayed);
     }
     @Then("The product images for all products should be displayed")
-    public void the_product_images_for_all_products_should_be_displayed() {
+    public void theProductImagesForAllProductsShouldBeDisplayed() {
         List<String> productNames = inventoryPage.getProductNames();
         for (String productName : productNames) {
             boolean isImageDisplayed = inventoryPage.isProductImageDisplayed(productName);
@@ -185,7 +185,7 @@ public class StepDefinitions {
     }
 
     @Then("The product descriptions for all products should be displayed")
-    public void the_product_descriptions_for_all_products_should_be_displayed() {
+    public void theProductDescriptionsForAllProductsShouldBeDisplayed() {
         List<String> productNames = inventoryPage.getProductNames();
         for (String productName : productNames) {
             boolean isDescriptionDisplayed = inventoryPage.isProductDescriptionDisplayed(productName);
@@ -193,7 +193,7 @@ public class StepDefinitions {
         }
     }
     @Then("The total amount in the cart should match the sum of the prices of the added products")
-    public void the_total_amount_in_the_cart_should_match_the_sum_of_the_prices_of_the_added_products() {
+    public void theTotalAmountInTheCartShouldMatchTheSumOfThePricesOfTheAddedProducts() {
         Double expectedTotal = cartProductPrices.stream().mapToDouble(Double::doubleValue).sum();
         Double actualTotal = cartPage.getCartTotal();
         Assert.assertEquals("The total amount in the cart is incorrect", expectedTotal, actualTotal, 0.01);
